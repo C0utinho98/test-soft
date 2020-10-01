@@ -29,7 +29,14 @@ export const Info = styled.li`
   }
 `;
 
-export const NoMeetups = styled.text`
-  margin: 300px auto;
-  color: rgba(255, 255, 255, 0.6);
+export const EmptyState = styled.div`
+  color: #666360;
+  display: flex;
+  height: 200px;
+  align-items: center;
+  place-content: center;
+  flex-direction: column;
+  span {
+    margin-bottom: 10px;
+  }
 `;

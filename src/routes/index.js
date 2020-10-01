@@ -9,10 +9,11 @@ import { RegisterBook } from '../pages/registerBook';
 export default function Routes() {
   return (
     <Switch>
-      <Route path="/" exact component={SignIn} />
+      <Route path="/" exact component={SignIn} isPrivate={false} />
       <Route path="/dashboard" component={Dashboard} isPrivate />
-      <Route path="/detail" component={DetailBook} isPrivate />
+      <Route path="/detail/:id" component={DetailBook} isPrivate />
       <Route path="/register" component={RegisterBook} isPrivate />
+      <Route path="/edit/:id" component={RegisterBook} isPrivate />
     </Switch>
   );
 }

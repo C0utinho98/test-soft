@@ -5,7 +5,7 @@ import { Router } from 'react-router-dom';
 import GlobalStyle from './styles/global';
 import './config/ReactotronConfig';
 import Routes from './routes';
-import history from './services/history';
+import history from './config/history';
 import { store, persistor } from './store';
 
 function App() {

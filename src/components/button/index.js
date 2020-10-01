@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Container } from './styles';
 
 export const Button = ({ children, ...rest }) => {
@@ -9,4 +10,8 @@ export const Button = ({ children, ...rest }) => {
       </button>
     </Container>
   );
+};
+
+Button.propTypes = {
+  children: PropTypes.node,
 };

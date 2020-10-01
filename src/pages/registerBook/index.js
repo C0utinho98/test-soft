@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FiClipboard,
   FiUser,
@@ -6,26 +6,65 @@ import {
   FiMap,
   FiFeather,
   FiGlobe,
+  FiChevronsLeft,
 } from 'react-icons/fi';
 import { useForm } from 'react-hook-form';
 import { Container, Button, Input } from '../../components/index';
 import { Content, Footer } from './styles';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Creators as actionsBook } from '../../store/ducks/books';
+import { useHistory, Redirect } from 'react-router-dom';
 
 export const RegisterBook = () => {
-  const { register, errors, handleSubmit } = useForm();
-  const [key, setKey] = useState('');
-  console.log(errors.yearOfEdition);
-  const submit = () => {};
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const { bookSelected } = useSelector(state => state?.book);
+  const { register, errors, handleSubmit, setValue } = useForm();
+  const [key, setKey] = useState(Math.random());
+
+  useEffect(() => {
+    dispatch(actionsBook.selectBook(id));
+  }, [id]);
+
+  useEffect(() => {
+    if (bookSelected?.rented) {
+      history.push('/dashboard');
+    }
+    if (bookSelected) {
+      setValue('name', bookSelected.name);
+      setValue('author', bookSelected.author);
+      setValue('yearOfEdition', bookSelected.yearOfEdition);
+      setValue('language', bookSelected.language);
+      setValue('genre', bookSelected.genre);
+      setValue('publishingCompany', bookSelected.publishingCompany);
+    }
+  }, [bookSelected]);
+
+  const submit = obj => {
+    if (!id) {
+      dispatch(actionsBook.createBook({ ...obj, id: Math.random() }));
+    } else {
+      dispatch(actionsBook.editBook({ ...obj, id: bookSelected.id }));
+    }
+    history.push('/dashboard');
+  };
+
+  const handleDelete = () => {
+    dispatch(actionsBook.removeBook(bookSelected.id));
+    history.push('/dashboard');
+  };
 
   const validateYear = value => {
-    return value.length === 4 && value <= new Date().getFullYear();
+    return value <= new Date().getFullYear();
   };
 
   return (
     <Container>
       <header>
-        <h1>Cadastar Livro</h1>
-        <Button>Realizar devolução</Button>
+        <h1>{!id ? 'Cadastar Livro' : 'Editar Livro'}</h1>
+        {id && <Button onClick={handleDelete}>Excluir Livro</Button>}
       </header>
       <Content
         autoComplete="off"
@@ -91,7 +130,10 @@ export const RegisterBook = () => {
           error={errors?.publishingCompany}
         />
         <Footer>
-          <u onClick={() => setKey(Math.random())}>Limpar</u>
+          <div onClick={() => history.push('/dashboard')}>
+            <FiChevronsLeft size={25} />
+            <u>Voltar</u>
+          </div>
           <Button type="submit">Salvar</Button>
         </Footer>
       </Content>
